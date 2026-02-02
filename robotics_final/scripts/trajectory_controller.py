@@ -102,19 +102,24 @@ class TrajectoryController(Node):
         if not self.trajectory or not self.trajectory.poses:
             return 0
         
-        min_dist = float('inf')
-        closest_idx = self.waypoint_index
+        # Optimize using squared distance to avoid sqrt calls
+        min_dist_sq = float('inf')
+        best_index = self.waypoint_index
+        
+        rx = robot_pose.position.x
+        ry = robot_pose.position.y
         
         for i in range(self.waypoint_index, len(self.trajectory.poses)):
-            dx = self.trajectory.poses[i].pose.position.x - robot_pose.position.x
-            dy = self.trajectory.poses[i].pose.position.y - robot_pose.position.y
-            dist = math.sqrt(dx * dx + dy * dy)
+            pose_pos = self.trajectory.poses[i].pose.position
+            dx = pose_pos.x - rx
+            dy = pose_pos.y - ry
+            dist_sq = dx*dx + dy*dy
             
-            if dist < min_dist:
-                min_dist = dist
-                closest_idx = i
+            if dist_sq < min_dist_sq:
+                min_dist_sq = dist_sq
+                best_index = i
         
-        return closest_idx
+        return best_index
     
     def select_lookahead_waypoint(self, robot_pose: Pose, start_idx: int) -> int:
         if not self.trajectory or not self.trajectory.poses:

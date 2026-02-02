@@ -8,7 +8,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
 class ScanFrameAdapter(Node):
     def __init__(self):
-        super().__init__('frame_id_converter_node')
+        super().__init__('scan_frame_adapter')
         
         qos_profile = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,

@@ -107,14 +107,17 @@ class GlobalPathPlanner(Node):
         return cost == 0 or cost == -1
     
     def compute_heuristic(self, x1: int, y1: int, x2: int, y2: int) -> float:
-        return math.hypot(x2 - x1, y2 - y1)
+        # Euclidean distance
+        dx = x2 - x1
+        dy = y2 - y1
+        return math.sqrt(dx * dx + dy * dy)
     
     def expand_neighbors(self, x: int, y: int) -> List[Tuple[int, int]]:
         neighbors = []
+        # Check adjacent cells first (4-connectivity), then diagonals
         directions = [
-            (-1, -1), (-1, 0), (-1, 1),
-            (0, -1),           (0, 1),
-            (1, -1),  (1, 0),  (1, 1)
+            (0, 1), (0, -1), (1, 0), (-1, 0),
+            (1, 1), (1, -1), (-1, 1), (-1, -1)
         ]
         
         for dx, dy in directions:
